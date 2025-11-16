@@ -86,20 +86,23 @@ Barra de navegación (Navbar) condicional que muestra diferentes enlaces según 
 Sigue estos pasos para ejecutar el proyecto en tu máquina local.
 
 Clonar el repositorio:
-
+```
 Bash
 
 git clone https://github.com/pablo-itec/efi_js_2025
-Navegar a la carpeta:
-
+```
+Navegar a la carpeta: /efi_js_2025
+```
 Bash
 
 cd efi_js_2025
+```
 Instalar dependencias: (Se asume que tienes Node.js y npm instalados, si no los tenes, instalalos).
-
+```
 Bash
 
 npm install
+```
 (Nota: tailwindcss y lucide-react no se instalarán localmente, ya que se cargan por CDN en index.html).
 
 Configurar la API:
@@ -113,10 +116,11 @@ Ejecutar el Backend:
 Asegúrate de tener la API de Flask (el backend) ejecutándose en una terminal separada.
 
 Ejecutar el Frontend:
-
+```
 Bash
 
 npm run dev
+```
 Abrir en el navegador:
 
 Vite te indicará la URL en la terminal (usualmente http://localhost:5173).
