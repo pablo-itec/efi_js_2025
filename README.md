@@ -111,6 +111,8 @@ El proyecto está configurado por defecto para conectarse al backend en http://1
 
 Si tu backend corre en una URL o puerto diferente, modifica la constante API_URL en el archivo src/App.jsx.
 
+Setear la contraseña de la bd en "mysql+pymysql://root:shurta@localhost/py_efi2_db" lin48
+
 Ejecutar el Backend:
 
 Asegúrate de tener la API de Flask (el backend) ejecutándose en una terminal separada.
