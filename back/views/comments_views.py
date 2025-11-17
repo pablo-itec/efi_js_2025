@@ -16,7 +16,7 @@ from decorators.decorators import comment_admin_mod_myid_required
 # 1. Blueprint para rutas de comentarios relacionadas con un post (GET, POST)
 # Este Blueprint se registrará con url_prefix='/posts' en app.py
 # views/comments_views.py
-post_comments_bp = Blueprint('post_comments_api', __name__, url_prefix='/posts/<int:id>/comments', strict_slashes=False)
+post_comments_bp = Blueprint('post_comments_api', __name__, url_prefix='/posts/<int:id>/comments')
 
 # 2. Blueprint para la ruta de detalle/eliminación de comentarios (DELETE)
 # Este Blueprint se registrará con url_prefix='/comments' en app.py
