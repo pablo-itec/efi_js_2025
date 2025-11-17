@@ -1051,7 +1051,7 @@ const AdminPage = () => {
 
     try {
       // PATCH /users/<id>/role
-      await apiFetch(`/users/${userId}/role`, {
+      await apiFetch(`/users/${userId}/role/`, {
         method: 'PATCH',
         body: { role: newRole }
       });
@@ -1073,7 +1073,7 @@ const AdminPage = () => {
     if (window.confirm(`¿Estás seguro de que querés desactivar al usuario ${userId}? (Soft Delete)`)) {
       try {
         // DELETE /users/<id> (Esto dispara el soft delete en tu backend)
-        await apiFetch(`/users/${userId}`, {
+        await apiFetch(`/users/${userId}/`, {
           method: 'DELETE'
         });
         showNotification('Usuario desactivado');
