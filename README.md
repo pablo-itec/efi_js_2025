@@ -126,3 +126,16 @@ npm run dev
 Abrir en el navegador:
 
 Vite te indicará la URL en la terminal (usualmente http://localhost:5173).
+
+
+
+IMPORTANTE
+
+si hay algun error probablemente sea la vercion de bcrypt para solucionarlo 
+```
+BASH
+
+pip uninstall bcrypt -y
+pip install bcrypt==4.1.2
+
+```
