@@ -139,3 +139,33 @@ pip uninstall bcrypt -y
 pip install bcrypt==4.1.2
 
 ```
+📂 Arquitectura y Estructura del Proyecto
+Con el objetivo de garantizar la escalabilidad y el mantenimiento del código, se realizó una refactorización completa del frontend, pasando de una estructura monolítica a una arquitectura modular basada en la Separación de Responsabilidades.
+
+El código fuente se organiza de la siguiente manera:
+
+Plaintext
+```
+src/
+├── components/       # Componentes UI reutilizables y aislados
+├── context/          # Lógica de negocio y estado global (Autenticación)
+├── pages/            # Vistas principales (Pantallas)
+└── App.jsx           # Orquestador principal y definición de Layout
+```
+
+Módulos:
+src/context/:
+
+Contiene el AuthContext.jsx. ---- conexión con la API, manejo de tokens JWT, persistencia de sesión en localStorage y gestión de estados de carga/error.
+
+src/components/:
+
+Almacena piezas de interfaz independientes que se utilizan a través de toda la aplicación, como la barra de navegación (Navbar), las notificaciones emergentes (Notification/Toasts) y el componente de seguridad de rutas (ProtectedRoute).
+
+src/pages/ (Vistas):
+
+Cada archivo aquí representa una "pantalla" o ruta específica de la aplicación (ej. LoginPage, AdminPage, PostDetailPage). Esto permite ubicar rápidamente errores visuales y mantiene limpia la lógica de ruteo.
+
+src/App.jsx :
+
+Su única responsabilidad es configurar el proveedor de contexto (AuthProvider), definir la estructura visual base (MainLayout) y gestionar el ruteo condicional entre las páginas.
