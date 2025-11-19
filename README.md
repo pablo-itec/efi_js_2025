@@ -140,17 +140,17 @@ pip install bcrypt==4.1.2
 
 ```
 📂 Arquitectura y Estructura del Proyecto
-Con el objetivo de garantizar la escalabilidad y el mantenimiento del código, se realizó una refactorización completa del frontend, pasando de una estructura monolítica a una arquitectura modular basada en la Separación de Responsabilidades.
+se realizó una refactorización completa del frontend, pasando de una estructura monolítica a una arquitectura modular basada en la Separación de Responsabilidades.
 
 El código fuente se organiza de la siguiente manera:
 
 Plaintext
 ```
 src/
-├── components/       # Componentes UI reutilizables y aislados
-├── context/          # Lógica de negocio y estado global (Autenticación)
-├── pages/            # Vistas principales (Pantallas)
-└── App.jsx           # Orquestador principal y definición de Layout
+├── components/       # componentes UI reutilizables y aislados
+├── context/          # estado global 
+├── pages/            # vistas principales 
+└── App.jsx           # definición de Layout
 ```
 
 Módulos:
