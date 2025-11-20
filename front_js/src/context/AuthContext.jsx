@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 // --- CONFIGURACIÓN DE LA API ---
@@ -49,16 +48,21 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [token]);
 
-  const showNotification = (message, type = "success") => {
+  // --- FUNCIONES ENVUELTAS EN useCallback PARA ESTABILIDAD ---
+
+  // 1. showNotification
+  const showNotification = useCallback((message, type = "success") => {
     setNotification({ visible: true, message, type });
     setTimeout(() => setNotification({ visible: false, message: "", type }), 3000);
-  };
+  }, [setNotification]);
 
-  const navigateTo = (page, params = null) => {
+  // 2. navigateTo
+  const navigateTo = useCallback((page, params = null) => {
     setPage(page);
     setPageParams(params);
-  };
+  }, [setPage, setPageParams]);
 
+  // 3. apiFetch (CORRECCIÓN CLAVE: ahora depende de showNotification)
   const apiFetch = useCallback(async (endpoint, options = {}) => {
       const { headers = {}, body, ...restOptions } = options;
       const defaultHeaders = { ...headers };
@@ -82,9 +86,10 @@ export const AuthProvider = ({ children }) => {
         showNotification(error.message, "error");
         throw error;
       }
-    }, [token]);
+    }, [token, showNotification]);
 
-  const login = async (email, password) => {
+  // 4. login
+  const login = useCallback(async (email, password) => {
     try {
       const data = await apiFetch("/login", { method: "POST", body: { email, password } });
       if (data.access_token) {
@@ -97,24 +102,26 @@ export const AuthProvider = ({ children }) => {
         navigateTo("home");
       }
     } catch (error) { console.error(error); }
-  };
+  }, [apiFetch, setToken, setUser, setIsAuthenticated, showNotification, navigateTo]); // Dependencias estables
 
-  const register = async (name, email, password, role) => {
+  // 5. register
+  const register = useCallback(async (name, email, password, role) => {
     try {
       await apiFetch("/register", { method: "POST", body: { username: name, email, password, role } });
       showNotification("¡Registro exitoso!");
       navigateTo("login");
     } catch (error) { console.error(error); }
-  };
+  }, [apiFetch, showNotification, navigateTo]); // Dependencias estables
 
-  const logout = () => {
+  // 6. logout
+  const logout = useCallback(() => {
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("token");
     showNotification("Sesión cerrada.");
     navigateTo("home");
-  };
+  }, [setUser, setToken, setIsAuthenticated, showNotification, navigateTo]); // Dependencias estables
 
   const value = { user, token, isAuthenticated, loading, login, register, logout, apiFetch, page, pageParams, navigateTo, showNotification, notification, setNotification };
 

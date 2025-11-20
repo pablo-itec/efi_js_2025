@@ -19,8 +19,7 @@ post_service = PostService()
 # -------------------------------------------------------------
 # Reemplaza PostAPI.get() y PostAPI.post() para /posts
 # -------------------------------------------------------------
-
-@post_bp.route('/', methods=['GET'])
+@post_bp.route('', methods=['GET'])
 def list_all_posts():
     """Listar todos los posts (Público)."""
     # Esta función puede ser reutilizada para listados públicos si el service maneja el filtro de is_active=True
@@ -31,7 +30,7 @@ def list_all_posts():
 # -------------------------------------------------------------
 # NUEVA RUTA: GET /posts/active
 # -------------------------------------------------------------
-@post_bp.route('/active', methods=['GET'])
+@post_bp.route('/active/', methods=['GET'])
 def list_all_active_posts():
     """Listar solo posts que están activos (Público)."""
     try:
@@ -45,8 +44,11 @@ def list_all_active_posts():
         
     except Exception as e:
         return {"Error": str(e)}, 500
-
-@post_bp.route('/', methods=['POST'])
+    
+# -------------------------------------------------------------
+# Reemplaza PostAPI.post() para POST /posts
+# -------------------------------------------------------------
+@post_bp.route('', methods=['POST'])
 @jwt_required()
 def create_new_post():
     """Crear un nuevo post (Usuario autenticado)."""
@@ -54,7 +56,7 @@ def create_new_post():
         data = PostSchema().load(request.json)
         user_id = get_jwt_identity()
         new_post = post_service.new_post(data, user_id)
-        return {"message" :f"post publicado con exito. Post: {PostSchema().dump(new_post)}"}, 200
+        return {"message" :f"post publicado con exito. Post: {PostSchema().dump(new_post)}"}, 201
     except ValidationError as error:
         return {"Error": error.messages}, 400
     except Exception as error:
@@ -63,7 +65,7 @@ def create_new_post():
 # -------------------------------------------------------------
 # RUTA: Filtrado por Categoría
 # -------------------------------------------------------------
-@post_bp.route('/category/<int:categoria_id>', methods=['GET'])
+@post_bp.route('/category/<int:categoria_id>/', methods=['GET'])
 def get_posts_by_category(categoria_id):
     """Obtiene posts filtrados por ID de Categoría (Público)."""
     try:
@@ -81,7 +83,7 @@ def get_posts_by_category(categoria_id):
 # Reemplaza PostDetailAPI (GET, PUT, DELETE) para /posts/<int:id>
 # -------------------------------------------------------------
 
-@post_bp.route('/<int:id>', methods=['GET'])
+@post_bp.route('/<int:id>/', methods=['GET'])
 def get_post_detail(id):
     """Ver un post específico por ID (Público)."""
     post = post_service.get_by_id(id)
@@ -102,7 +104,7 @@ def update_existing_post(id):
     except ValidationError as error:
         return {"Error": error.messages}, 400
 
-@post_bp.route('/<int:id>', methods=['DELETE'])
+@post_bp.route('/<int:id>/', methods=['DELETE'])
 @jwt_required()
 @post_admin_myid_required
 def delete_existing_post(id):

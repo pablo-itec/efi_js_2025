@@ -26,7 +26,7 @@ comment_detail_bp = Blueprint('comment_detail_api', __name__, url_prefix='/comme
 # -------------------------------------------------------------
 # GET /posts/<id>/comments
 # -------------------------------------------------------------
-@post_comments_bp.route('/', methods=['GET'])
+@post_comments_bp.route('', methods=['GET'])
 def list_post_comments(id):
     """Listar comentarios de un post específico."""
     # Usamos el 'id' del post en la ruta, que Flask pasa como argumento
@@ -58,7 +58,7 @@ def list_all_active_comments():
 # -------------------------------------------------------------
 # POST /posts/<id>/comments
 # -------------------------------------------------------------
-@post_comments_bp.route('/', methods=['POST'])
+@post_comments_bp.route('', methods=['POST'])
 @jwt_required()
 def create_new_comment(id):
     """Crear un comentario en un post (Usuario autenticado)."""

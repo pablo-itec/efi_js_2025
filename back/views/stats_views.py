@@ -8,8 +8,7 @@ from services.stats_services import StatsService
 # --- BLUEPRINT SETUP ---
 # Registrado en app.py con url_prefix='/stats'
 stats_bp = Blueprint('stats_api', __name__) 
-
-@stats_bp.route('/', methods=['GET'])
+@stats_bp.route('', methods=['GET'])
 @jwt_required()
 @roles_required("admin", "moderator") # Solo Admin y Moderador pueden ver las estadísticas
 def get_stats():

@@ -18,7 +18,7 @@ categorie_bp = Blueprint('categorie_api', __name__)
 # -------------------------------------------------------------
 # Reemplaza CategoriaListAPI.get() para GET /categories
 # -------------------------------------------------------------
-@categorie_bp.route('/', methods=['GET'])
+@categorie_bp.route('', methods=['GET'])
 def list_all_categories():
     """Listar todas las categorías (Público)."""
     # Llamada al método original: list_all()

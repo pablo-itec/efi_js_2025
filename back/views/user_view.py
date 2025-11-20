@@ -22,7 +22,7 @@ user_service = UserService()
 # -------------------------------------------------------------
 # Reemplaza UserAPI.get() para GET /users
 # -------------------------------------------------------------
-@user_bp.route('/', methods=['GET'])
+@user_bp.route('', methods=['GET'])
 @jwt_required()
 @roles_required("admin")
 def list_all_users():
@@ -61,7 +61,7 @@ def update_user_profile(id):
     except Exception as error:
         return {"error": f"No se pudo cambiar los datos: {str(error)}"}, 400
 
-@user_bp.route('/<int:id>/role', methods=['PUT'])
+@user_bp.route('/<int:id>/role/', methods=['PATCH'])
 @jwt_required()
 @roles_required("admin")
 def change_user_role(id):

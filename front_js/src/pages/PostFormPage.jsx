@@ -13,40 +13,70 @@ const PostFormPage = ({ id }) => {
   useEffect(() => {
     const loadData = async () => {
         try {
+            // 1. Cargar categorías (necesario para el formulario)
             const catData = await apiFetch('/categories');
             setCategories(catData || []);
             
+            // 2. Cargar datos del post si estamos editando
             if (isEditing) {
                 const postData = await apiFetch(`/posts/${id}`);
                 setTitle(postData.title);
                 setContent(postData.content);
-                setCategoriaId(postData.categoria?.id || '');
+                // Usamos el ID de la categoría para pre-seleccionar
+                setCategoriaId(postData.categoria?.id || ''); 
             }
-        } catch (error) {}
+        } catch (error) {
+            // Si falla la carga inicial (ej. el post no existe o no tiene permiso)
+            if (isEditing) {
+                navigateTo('posts'); 
+                showNotification("No se pudo cargar el post para editar.", "error");
+            }
+        }
     };
     loadData();
-  }, [id, isEditing, apiFetch]);
+  }, [id, isEditing, apiFetch, navigateTo, showNotification]);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Preparar los datos del post
     const postData = {
         title,
         content,
-        ...(categoriaId && { categoria_id: parseInt(categoriaId) })
+        // Usar parseInt() para asegurar que el ID de categoría sea un número, si existe
+        ...(categoriaId && { categoria_id: parseInt(categoriaId) }) 
     };
     
     try {
+        let responsePost;
+        
         if (isEditing) {
-            const updatedPost = await apiFetch(`/posts/${id}`, { method: 'PUT', body: postData });
+            // Lógica de Edición (PUT)
+            responsePost = await apiFetch(`/posts/${id}`, { method: 'PUT', body: postData });
             showNotification('Post actualizado con éxito');
-            navigateTo('postDetail', { id: updatedPost.id });
         } else {
-            const newPost = await apiFetch('/posts', { method: 'POST', body: postData });
+            // Lógica de Creación (POST)
+            responsePost = await apiFetch('/posts', { method: 'POST', body: postData });
             showNotification('Post creado con éxito');
-            navigateTo('postDetail', { id: newPost.id });
         }
-    } catch (error) {}
+        
+        // 1. Intenta obtener el ID de la respuesta
+        const postId = responsePost?.id;
+
+        if (postId) {
+            // 2. Redirige a la página de detalle del post usando el ID
+            navigateTo('postDetail', { id: postId });
+        } else {
+            // 3. Si no se pudo obtener el ID (a pesar del 201), lleva al usuario a la lista principal
+            // Esto ocurre si la respuesta JSON del backend es inválida o incompleta.
+            console.error("Redirección fallida: Respuesta del servidor incompleta o sin ID:", responsePost);
+            navigateTo('posts');
+        }
+        
+    } catch (error) {
+        // La notificación ya se muestra desde AuthContext. Solo agregamos un log para depuración.
+        console.error("Error al enviar el formulario:", error);
+    }
   };
 
   return (
