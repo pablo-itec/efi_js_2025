@@ -169,3 +169,78 @@ Cada archivo aquí representa una "pantalla" o ruta específica de la aplicació
 src/App.jsx :
 
 Su única responsabilidad es configurar el proveedor de contexto (AuthProvider), definir la estructura visual base (MainLayout) y gestionar el ruteo condicional entre las páginas.
+
+---
+# FEAT & FIX: Estabilidad, UX y Permisos. Resuelve CORS/308 y aplica Soft Delete
+
+## 🚀 Resumen de Cambios y Mejoras del Proyecto (Commit Log)
+
+Este conjunto de modificaciones se enfoca en resolver errores críticos de comunicación (CORS, 308), la estabilidad de la aplicación (bucle infinito en React), y la implementación de requisitos clave como la visualización condicional de datos (Soft Delete) y la corrección de zonas horarias.
+
+## I. 🛠️ Estabilidad y Comunicación (React / Flask)
+
+### Archivo(s) Modificado(s)
+```
+1. AuthContext.jsx (Frontend)
+2. app.py (Backend)
+3. models.py (Backend)
+```
+### Descripción del Cambio
+```
+1. Se envolvieron todas las funciones expuestas (apiFetch, login, logout, showNotification, MapsTo) en useCallback para garantizar su estabilidad en los renders.
+2. Se configuró explícitamente flask-cors para permitir las credenciales (supports_credentials=True) y orígenes específicos del frontend.
+3. Se importó pytz y se cambió el valor por defecto (default) de las columnas date_time en Post y Comment para usar la hora local de Argentina (America/Argentina/Buenos_Aires).
+```
+### Resultado en la Página
+```
+1. Solución al Bucle Infinito: Se eliminó la inestabilidad del frontend, resolviendo el bloqueo de la aplicación que ocurría con errores de red o el rol "Moderador".
+2. Solución al Error CORS: Se resolvió el bloqueo de solicitudes de red por el navegador, permitiendo la comunicación exitosa de la API con el token JWT.
+3. Corrección de Zona Horaria: Los nuevos posts y comentarios ahora muestran la hora local correcta (GMT-3) en lugar de la hora UTC desfasada.
+
+```
+## II. 🔗 Corrección de Rutas (Error 308)
+
+El error 308 Permanent Redirect causaba la mayoría de los fallos de carga en las secciones protegidas. Se resolvió aplicando la doble definición de ruta (/ruta y /ruta/) en el backend de Flask.
+
+### Archivo(s) Modificado(s) y Rutas Corregidas
+```
+1. post_views.py: GET/POST/PUT/DELETE /posts y /posts/<id>.
+2. categories_views.py: GET /categories.
+3. user_view.py: GET /users y PATCH /users/<id>/role.
+4. comments_views.py: GET/POST /posts/<id>/comments.
+
+```
+### Resultado en la Página
+```
+1.PostsListPage y PostFormPage: Se resolvió el bloqueo total de la aplicación al cargar la lista y al intentar crear/editar un post.
+2. AdminPage: Se resolvió el error CORS y el administrador ya puede acceder al panel y cambiar roles sin fallos.
+3. Navegación Estable: Se garantiza que todas las peticiones clave del frontend sean aceptadas por Flask sin redirecciones, lo cual es vital en un contexto CORS.
+
+```
+## III. ✨ Funcionalidad y Experiencia de Usuario (UX)
+
+### Archivo(s) Modificado(s)
+```
+1. RegisterPage.jsx
+2. PostFormPage.jsx
+3. schemas.py
+4. PostsListPage.jsx
+5. PostDetailPage.jsx
+```
+### Descripción del Cambio
+```
+1. Se añadió la opción "Moderador" al formulario de registro.
+2. Se implementó la lógica de redirección (MapsTo) al ID del post recién creado (newPost.id).
+3. Se corrigió la serialización en schemas.py para mapear la relación user a la clave autor.
+4. Se implementó la lógica de filtrado y estilo condicional (is_active en PostsListPage.jsx).
+5. Se ajustaron las condiciones canEditPost y canDeleteComment para incluir el rol moderator.
+6. Se añadieron llamadas a new Date(item.date_time).toLocaleString() para mostrar la fecha.
+```
+### Resultado en la Página
+```
+1. Registro de Roles: Los usuarios pueden registrarse con los tres niveles de permisos disponibles.
+2. Creación de Post Exitosa: Después de hacer clic en "Publicar Post", el usuario es notificado y redirigido a la página de detalle.
+3. Adiós, Anónimo: Ahora se muestra correctamente el nombre de usuario del autor en posts y comentarios.
+4. Borrado Lógico (Soft Delete): Los usuarios comunes ya no ven posts borrados. Administradores/Moderadores los ven con estilo tachado (rojo pálido).
+5. Permisos Refinados: Moderadores ahora tienen la capacidad de editar/eliminar cualquier post y comentario, reflejando la lógica del backend.
+6. Visualización de Tiempo: Se muestra la fecha y hora de creación para posts y comentarios, con la hora correcta de Argentina.
