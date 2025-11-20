@@ -173,7 +173,7 @@ Su única responsabilidad es configurar el proveedor de contexto (AuthProvider),
 ---
 # FEAT & FIX: Estabilidad, UX y Permisos. Resuelve CORS/308 y aplica Soft Delete
 
-## 🚀 Resumen de Cambios y Mejoras del Proyecto (Commit Log)
+## 🚀 Resumen de Cambios y Mejoras del Proyecto
 
 Este conjunto de modificaciones se enfoca en resolver errores críticos de comunicación (CORS, 308), la estabilidad de la aplicación (bucle infinito en React), y la implementación de requisitos clave como la visualización condicional de datos (Soft Delete) y la corrección de zonas horarias.
 
